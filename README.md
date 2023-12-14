@@ -20,21 +20,20 @@ go get github.com/amineck/purify
 
 ```go
 type userForm struct {
-	Name  string
-	Email string
+    Name  string
+    Email string
 }
 
 func main() {
-	form := userForm {
-		Name:  " john doe123 ",
-		Email: " John@EXAMPLE.com ",
-	}
+    form := userForm {
+        Name:  " john doe123 ",
+        Email: " John@EXAMPLE.com ",
+    }
     purify.SanitizeStruct(&form,
         purify.Field(&form.Name, purify.TrimSpace, purify.ToAlpha, purify.ToTitleCase),
         purify.Field(&form.Email, purify.TrimSpace, purify.ToEmail),
     )
-
-	fmt.Printf("%+v\n", form)
+    fmt.Printf("%+v\n", form)
 }
 
 // Output:
