@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/huandu/xstrings"
+	"github.com/kennygrant/sanitize"
 )
 
 // Predefined sanitization rules.
@@ -22,6 +23,10 @@ var (
 	ToAlphaNumeric = NewStringRule(toAlphaNumeric)
 	ToAlpha        = NewStringRule(toAlpha)
 	ToNumeric      = NewStringRule(toNumeric)
+	StripHTML      = NewStringRule(sanitize.HTML)
+	ToName         = NewStringRule(sanitize.Name)
+	ToPath         = NewStringRule(sanitize.Path)
+	StripAccents   = NewStringRule(sanitize.Accents)
 )
 
 type (
