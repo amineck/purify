@@ -4,7 +4,7 @@ An idiomatic Go package for sanitizing user input, inspired by [ozzo-validation]
 
 ## Why?
 
-Most sanitization packages use stuct tags to define sanitization rules. This is a great approach, but:
+Most sanitization packages use struct tags to define sanitization rules. This is a great approach, but:
 - It's not always possible to add struct tags to your models. (ex: when using protobuf types)
 - Struct tags can be error-prone and hard to read.
 
@@ -16,7 +16,7 @@ This package allows you to define sanitization rules in a more declarative way.
 go get github.com/amineck/purify
 ```
 
-## Usage
+## Struct Example
 
 ```go
 type userForm struct {
@@ -29,15 +29,41 @@ func main() {
         Name:  " john doe123 ",
         Email: " John@EXAMPLE.com ",
     }
-    purify.SanitizeStruct(&form,
+    err := purify.SanitizeStruct(&form,
         purify.Field(&form.Name, purify.TrimSpace, purify.ToAlpha, purify.ToTitleCase),
         purify.Field(&form.Email, purify.TrimSpace, purify.ToEmail),
     )
+	if err != nil {
+        panic(err)
+    }
     fmt.Printf("%+v\n", form)
 }
 
 // Output:
 // {Name:John Doe Email:John@example.com}
+```
+
+
+## Map Example
+
+```go
+func main() {
+    m := map[string]string {
+        "name":  " john doe123 ",
+        "email": " John@EXAMPLE.com ",
+    }
+    err := purify.SanitizeMap(m,
+        purify.Key("name", purify.TrimSpace, purify.ToAlpha, purify.ToTitleCase),
+        purify.Key("email", purify.TrimSpace, purify.ToEmail),
+    )
+	if err != nil {
+        panic(err)
+    }
+    fmt.Printf("%+v\n", form)
+}
+
+// Output:
+// map[name:John Doe email:John@example.com]
 ```
 
 ## Functions
@@ -57,3 +83,4 @@ func main() {
 * ToName: Makes a string safe to use in a file name. `"hello world"` => `"hello-world"`
 * ToPath: Makes a string safe to use as an url path. `"hello world"` => `"hello-world"`
 * StripAccents: Remove accents. `"héllö wórld"` => `"hello world"`
+* ToSHA256: Hash string using SHA256. `"hello world"` => `"b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9"`
