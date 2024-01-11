@@ -1,7 +1,7 @@
 package purify
 
 import (
-	"database/sql/driver"
+	"crypto/sha256"
 	"errors"
 	"fmt"
 	"reflect"
@@ -9,11 +9,32 @@ import (
 	"strings"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/huandu/xstrings"
+	"github.com/kennygrant/sanitize"
+)
+
+// Predefined string sanitization rules.
+var (
+	TrimSpace      = NewStringRule(strings.TrimSpace)
+	ToCamelCase    = NewStringRule(xstrings.ToCamelCase)
+	ToKebabCase    = NewStringRule(xstrings.ToKebabCase)
+	ToSnakeCase    = NewStringRule(xstrings.ToSnakeCase)
+	ToTitleCase    = NewStringRule(strings.Title)
+	LTrimSpace     = NewStringRule(trimLeftSpace)
+	RTrimSpace     = NewStringRule(trimRightSpace)
+	ToEmail        = NewStringRule(toEmail)
+	ToAlphaNumeric = NewStringRule(toAlphaNumeric)
+	ToAlpha        = NewStringRule(toAlpha)
+	ToNumeric      = NewStringRule(toNumeric)
+	StripHTML      = NewStringRule(sanitize.HTML)
+	ToName         = NewStringRule(sanitize.Name)
+	ToPath         = NewStringRule(sanitize.Path)
+	StripAccents   = NewStringRule(sanitize.Accents)
+	ToSHA256       = NewStringRule(toSHA256)
 )
 
 var (
-	bytesType  = reflect.TypeOf([]byte(nil))
-	valuerType = reflect.TypeOf((*driver.Valuer)(nil)).Elem()
+	bytesType = reflect.TypeOf([]byte(nil))
 )
 
 var (
@@ -73,12 +94,6 @@ func trimRightSpace(value string) string {
 	return strings.TrimRight(value, " ")
 }
 
-func trim(value string) func(string) string {
-	return func(s string) string {
-		return strings.Trim(s, value)
-	}
-}
-
 func toEmail(value string) string {
 	splits := strings.Split(value, "@")
 	if len(splits) != 2 {
@@ -97,4 +112,8 @@ func toAlpha(value string) string {
 
 func toNumeric(value string) string {
 	return reNumeric.ReplaceAllLiteralString(value, "")
+}
+
+func toSHA256(value string) string {
+	return fmt.Sprintf("%x", sha256.Sum256([]byte(value)))
 }
