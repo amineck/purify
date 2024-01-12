@@ -14,11 +14,11 @@ type userForm struct {
 func main() {
 	// Struct Example
 	form := userForm{
-		Name:  " john doe123 ",
+		Name:  " john doe123 $%@#",
 		Email: " John@EXAMPLE.com ",
 	}
 	err := purify.SanitizeStruct(&form,
-		purify.Field(&form.Name, purify.TrimSpace, purify.ToAlpha, purify.ToTitleCase),
+		purify.Field(&form.Name, purify.ToAlphaNumeric, purify.TrimSpace, purify.ToTitleCase),
 		purify.Field(&form.Email, purify.TrimSpace, purify.ToEmail),
 	)
 	if err != nil {
