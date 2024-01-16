@@ -7,8 +7,7 @@ An idiomatic Go package for sanitizing user input, inspired by [ozzo-validation]
 Most sanitization packages use struct tags to define sanitization rules. This is a great approach, but:
 - It's not always possible to add struct tags to your models. (ex: when using protobuf types)
 - Struct tags can be error-prone and hard to read.
-
-This package allows you to define sanitization rules in a more declarative way.
+- Sometimes a declarative syntax is more suitable than struct tags.
 
 ## Installation
 
@@ -33,7 +32,7 @@ func main() {
         purify.Field(&form.Name, purify.TrimSpace, purify.ToAlpha, purify.ToTitleCase),
         purify.Field(&form.Email, purify.TrimSpace, purify.ToEmail),
     )
-	if err != nil {
+    if err != nil {
         panic(err)
     }
     fmt.Printf("%+v\n", form)
@@ -56,7 +55,7 @@ func main() {
         purify.Key("name", purify.TrimSpace, purify.ToAlpha, purify.ToTitleCase),
         purify.Key("email", purify.TrimSpace, purify.ToEmail),
     )
-	if err != nil {
+    if err != nil {
         panic(err)
     }
     fmt.Printf("%+v\n", form)
