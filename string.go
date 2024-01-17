@@ -16,6 +16,8 @@ import (
 // Predefined string sanitization rules.
 var (
 	TrimSpace      = NewStringRule(strings.TrimSpace)
+	ToLower        = NewStringRule(strings.ToLower)
+	ToUpper        = NewStringRule(strings.ToUpper)
 	ToCamelCase    = NewStringRule(xstrings.ToCamelCase)
 	ToKebabCase    = NewStringRule(xstrings.ToKebabCase)
 	ToSnakeCase    = NewStringRule(xstrings.ToSnakeCase)
