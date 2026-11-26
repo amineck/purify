@@ -17,7 +17,7 @@ type WhenRule struct {
 }
 
 // Apply checks if the condition is true and if so, it sanitizes the value using the specified rules.
-func (r WhenRule) Apply(value interface{}) (any, error) {
+func (r WhenRule) Apply(value any) (any, error) {
 	if r.condition {
 		return Sanitize(value, r.rules...)
 	}

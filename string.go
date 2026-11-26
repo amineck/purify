@@ -21,7 +21,7 @@ var (
 	ToCamelCase    = NewStringRule(xstrings.ToCamelCase)
 	ToKebabCase    = NewStringRule(xstrings.ToKebabCase)
 	ToSnakeCase    = NewStringRule(xstrings.ToSnakeCase)
-	ToTitleCase    = NewStringRule(strings.Title)
+	ToTitleCase    = NewStringRule(strings.Title) //nolint:staticcheck // x/text/cases.Title lowercases the rest of each word, which would change behavior.
 	LTrimSpace     = NewStringRule(trimLeftSpace)
 	RTrimSpace     = NewStringRule(trimRightSpace)
 	ToEmail        = NewStringRule(toEmail)
@@ -77,7 +77,7 @@ func NewStringRule(sanitizer stringSanitizer) *StringRule {
 // EnsureString ensures the given value is a string.
 // If the value is a byte slice, it will be typecast into a string.
 // An error is returned otherwise.
-func EnsureString(value interface{}) (string, error) {
+func EnsureString(value any) (string, error) {
 	v := reflect.ValueOf(value)
 	if v.Kind() == reflect.String {
 		return v.String(), nil
