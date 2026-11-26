@@ -26,7 +26,7 @@ func TestWhen(t *testing.T) {
 			condition: true,
 			rules:     []Rule{ToAlphaNumeric},
 			elseRules: []Rule{ToAlpha},
-			expected:  "john doe123",
+			expected:  "johndoe123",
 		},
 		{
 			name:      "false condition",

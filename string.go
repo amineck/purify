@@ -42,7 +42,7 @@ var (
 var (
 	reNumeric      = regexp.MustCompile(`[^0-9]`)
 	reAlpha        = regexp.MustCompile(`[^\p{L}\s]`)
-	reAlphaNumeric = regexp.MustCompile(`[^\p{L}\d\s]`)
+	reAlphaNumeric = regexp.MustCompile(`[^\p{L}\d]`)
 )
 
 type stringSanitizer func(value string) string
