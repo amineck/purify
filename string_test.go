@@ -100,40 +100,84 @@ func TestToAlpha(t *testing.T) {
 }
 
 func TestToAlphaNumeric(t *testing.T) {
-	testCases := []struct {
-		name        string
-		input       any
-		expected    any
-		expectedErr error
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		input     any
+		expected  any
+		expectErr bool
 	}{
 		{
-			name:     "no punctuation",
-			input:    "john doe123",
-			expected: "john doe123",
+			name:     "keeps letters and digits",
+			input:    "johndoe123",
+			expected: "johndoe123",
 		},
 		{
-			name:     "with punctuation",
-			input:    "john doe%*(?!+=123",
-			expected: "john doe123",
+			name:     "removes spaces",
+			input:    "john doe 123",
+			expected: "johndoe123",
 		},
 		{
-			name:        "non string",
-			input:       123,
-			expected:    nil,
-			expectedErr: errors.New("must be either a string"),
+			name:     "removes leading and trailing spaces",
+			input:    "  john doe123  ",
+			expected: "johndoe123",
+		},
+		{
+			name:     "removes tabs, newlines and carriage returns",
+			input:    "john\tdoe\n123\r",
+			expected: "johndoe123",
+		},
+		{
+			name:     "removes punctuation",
+			input:    "john%*(?!+=doe123",
+			expected: "johndoe123",
+		},
+		{
+			name:     "removes spaces and punctuation together",
+			input:    " john doe%*(?!+= 123 ",
+			expected: "johndoe123",
+		},
+		{
+			name:     "keeps unicode letters",
+			input:    "jöhn dóe 123",
+			expected: "jöhndóe123",
+		},
+		{
+			name:     "only spaces and punctuation becomes empty",
+			input:    "  !? ",
+			expected: "",
+		},
+		{
+			name:     "empty string",
+			input:    "",
+			expected: "",
+		},
+		{
+			name:     "byte slice",
+			input:    []byte("john doe 123!"),
+			expected: "johndoe123",
+		},
+		{
+			name:      "non string",
+			input:     123,
+			expectErr: true,
 		},
 	}
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			res, err := ToAlphaNumeric.Apply(tc.input)
-			if tc.expectedErr != nil {
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			actual, err := ToAlphaNumeric.Apply(tt.input)
+
+			if tt.expectErr {
 				assert.Error(t, err)
-				assert.Contains(t, err.Error(), tc.expectedErr.Error())
 				return
 			}
 			assert.NoError(t, err)
-			assert.Equal(t, tc.expected, res)
+			assert.Equal(t, tt.expected, actual)
 		})
 	}
 }

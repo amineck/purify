@@ -32,7 +32,7 @@ func TestSanitizeMap(t *testing.T) {
 		},
 		{
 			name: "map[string]interface{}",
-			input: map[string]interface{}{
+			input: map[string]any{
 				"name":  " john doe123 ",
 				"email": " John@EXAMPLE.com ",
 			},
@@ -40,7 +40,7 @@ func TestSanitizeMap(t *testing.T) {
 				{key: "name", rules: []Rule{TrimSpace, ToAlpha, ToTitleCase}},
 				{key: "email", rules: []Rule{TrimSpace, ToEmail, ToSHA256}},
 			},
-			expected: map[string]interface{}{
+			expected: map[string]any{
 				"name":  "John Doe",
 				"email": "20740450eae791b7928c1869d3a0c964e8685544eb0d70c386d6ba825270b12e",
 			},

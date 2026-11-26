@@ -8,9 +8,8 @@ import (
 type (
 	// KeyRules represents a rule set associated with a map key.
 	KeyRules struct {
-		key      any
-		optional bool
-		rules    []Rule
+		key   any
+		rules []Rule
 	}
 )
 
@@ -26,7 +25,7 @@ func Key(key any, rules ...Rule) *KeyRules {
 // against the corresponding sanitization rules.
 func SanitizeMap(value any, fields ...*KeyRules) error {
 	rv := reflect.ValueOf(value)
-	if (rv.Kind() == reflect.Ptr || rv.Kind() == reflect.Interface) && rv.IsNil() {
+	if (rv.Kind() == reflect.Pointer || rv.Kind() == reflect.Interface) && rv.IsNil() {
 		return nil
 	}
 	if rv.Kind() != reflect.Map {

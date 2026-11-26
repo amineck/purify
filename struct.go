@@ -31,7 +31,7 @@ func Field(fieldPtr any, rules ...Rule) *FieldRules {
 // against the corresponding sanitization rules.
 func SanitizeStruct(structPtr any, fields ...*FieldRules) error {
 	value := reflect.ValueOf(structPtr)
-	if value.Kind() != reflect.Ptr || !value.IsNil() && value.Elem().Kind() != reflect.Struct {
+	if value.Kind() != reflect.Pointer || !value.IsNil() && value.Elem().Kind() != reflect.Struct {
 		// must be a pointer to a struct
 		return errors.New("only a pointer to a struct can be sanitized")
 	}
@@ -39,11 +39,10 @@ func SanitizeStruct(structPtr any, fields ...*FieldRules) error {
 		// treat a nil struct pointer as valid
 		return nil
 	}
-	value = value.Elem()
 
 	for i, fr := range fields {
 		fv := reflect.ValueOf(fr.fieldPtr)
-		if fv.Kind() != reflect.Ptr {
+		if fv.Kind() != reflect.Pointer {
 			return fmt.Errorf("field %d must be a pointer", i)
 		}
 
@@ -67,7 +66,7 @@ func findAndSanitizeStructField(structPtr any) error {
 
 	for i := 0; i < value.NumField(); i++ {
 		fv := value.Field(i)
-		if fv.Kind() != reflect.Ptr || fv.IsNil() || fv.Elem().Kind() != reflect.Struct {
+		if fv.Kind() != reflect.Pointer || fv.IsNil() || fv.Elem().Kind() != reflect.Struct {
 			continue
 		}
 
